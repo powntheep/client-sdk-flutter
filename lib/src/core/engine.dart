@@ -151,6 +151,8 @@ class Engine extends Disposable with EventsEmittable<EngineEvent> {
         connectOptions: this.connectOptions,
         roomOptions: this.roomOptions,
       );
+      
+      print('signalClient CONNECTED');
 
       // wait for join response
       await _signalListener.waitFor<SignalJoinResponseEvent>(

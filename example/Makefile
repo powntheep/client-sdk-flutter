@@ -18,5 +18,10 @@ e2ee: dart compile js .\web\e2ee.worker.dart -o .\example\web\e2ee.worker.dart.j
 .PHONY: proto format
 
 wasmd:
-	flutter build web --wasm --wasm-opt debug
-	cd build/web_wasm && dhttpd --port 9888
+	flutter build web --wasm --wasm-opt debug --omit-type-checks --web-renderer html
+	cd build/web_wasm && dhttpd --port 8090
+wasm:
+	flutter build web --wasm --wasm-opt full --omit-type-checks --web-renderer html
+	cd build/web_wasm && dhttpd --port 8090
+webdev:
+	flutter run -d web-server --web-port 8080 --web-renderer html

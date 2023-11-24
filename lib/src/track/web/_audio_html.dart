@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:html' as html;
+import 'dart:js_interop';
+
+import 'package:web/helpers.dart' as html;
 import 'dart:js_util' as jsutil;
 
 import 'package:flutter_webrtc/flutter_webrtc.dart' as rtc;
-
-import '_audio_context.dart';
 
 // ignore: implementation_imports
 import 'package:dart_webrtc/src/media_stream_track_impl.dart'; // import_sorter: keep
@@ -25,7 +25,7 @@ import 'package:dart_webrtc/src/media_stream_track_impl.dart'; // import_sorter:
 const audioContainerId = 'livekit_audio_container';
 const audioPrefix = 'livekit_audio_';
 
-AudioContext _audioContext = AudioContext();
+html.AudioContext _audioContext = html.AudioContext();
 Map<String, html.Element> _audioElements = {};
 
 Future<dynamic> startAudio(String id, rtc.MediaStreamTrack track) async {
@@ -36,10 +36,10 @@ Future<dynamic> startAudio(String id, rtc.MediaStreamTrack track) async {
   final elementId = audioPrefix + id;
   var audioElement = html.document.getElementById(elementId);
   if (audioElement == null) {
-    audioElement = html.AudioElement()
+    audioElement = html.createAudioElement()
       ..id = elementId
       ..autoplay = true;
-    findOrCreateAudioContainer().append(audioElement);
+    findOrCreateAudioContainer().appendChild(audioElement);
     _audioElements[id] = audioElement;
   }
 
@@ -48,17 +48,17 @@ Future<dynamic> startAudio(String id, rtc.MediaStreamTrack track) async {
   }
   final audioStream = html.MediaStream();
   audioStream.addTrack(track.jsTrack);
-  audioElement.srcObject = audioStream;
+  audioElement.srcObject = audioStream as JSObject;
   return audioElement.play();
 }
 
 Future<bool> startAllAudioElement() async {
   for (final element in _audioElements.values) {
     if (element is html.AudioElement) {
-      await element.play();
+      await element.play().toDart;
     }
   }
-  return _audioContext.state == AudioContextState.running;
+  return _audioContext.state == 'running';
 }
 
 void stopAudio(String id) {
@@ -72,17 +72,17 @@ void stopAudio(String id) {
   }
 }
 
-html.DivElement findOrCreateAudioContainer() {
+html.HTMLDivElement findOrCreateAudioContainer() {
   var div = html.document.getElementById(audioContainerId);
   if (div != null) {
-    return div as html.DivElement;
+    return div as html.HTMLDivElement;
   }
 
-  div = html.DivElement();
-  div.id = audioContainerId;
-  div.style.display = 'none';
-  html.document.body?.append(div);
-  return div as html.DivElement;
+  final newDiv = html.createElementTag('div') as html.HTMLDivElement;
+  newDiv.id = audioContainerId;
+  newDiv.style.display = 'none';
+  html.document.body?.appendChild(newDiv);
+  return div as html.HTMLDivElement;
 }
 
 void setSinkId(String id, String deviceId) {

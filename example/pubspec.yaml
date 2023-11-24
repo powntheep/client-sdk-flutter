@@ -27,6 +27,37 @@ dependencies:
     #   url: https://github.com/livekit/client-sdk-flutter
     #   ref: main
 
+dependency_overrides: 
+  sdp_transform:
+    path: /Users/pl/Documents/open-source/forks/dart-sdp-transform
+  platform_detect:
+    git:
+      url: https://github.com/powntheep/platform_detect.git
+      ref: master
+  device_info_plus: 
+    git:
+      url: https://github.com/powntheep/plus_plugins.git
+      path: packages/device_info_plus/device_info_plus
+      ref: main
+  connectivity_plus: 
+    git:
+      url: https://github.com/powntheep/plus_plugins.git
+      path: packages/connectivity_plus/connectivity_plus
+      ref: main
+  flutter_window_close:
+    git:
+      url: https://github.com/powntheep/flutter_window_close.git
+      ref: main
+  dart_webrtc:
+    path: /Users/pl/Documents/open-source/forks/dart-webrtc
+  flutter_webrtc:
+    path: /Users/pl/Documents/open-source/forks/flutter-webrtc
+  http: 
+    git:
+      url: https://github.com/dart-lang/http.git
+      ref: master
+      path: pkgs/http
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

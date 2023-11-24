@@ -44,7 +44,9 @@ class EventsEmitter<T> extends EventsListenable<T> {
     bool listenSynchronized = false,
   }) : super(synchronized: listenSynchronized) {
     // clean up
-    onDispose(() async => await streamCtrl.close());
+    onDispose(() async {
+      await streamCtrl.close();
+    });
   }
 
   @override
@@ -181,6 +183,7 @@ abstract class EventsListenable<T> extends Disposable {
 
     final cancelFunc = on<E>(
       (event) {
+        print('EVENTS!!!: $event');
         if (!completer.isCompleted) {
           completer.complete(event);
         }

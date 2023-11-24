@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import 'dart:html';
+import 'package:web/helpers.dart' as html;
 import 'dart:js' as js;
 import 'dart:js_util';
 import 'dart:typed_data';

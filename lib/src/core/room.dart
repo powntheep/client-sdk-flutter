@@ -44,7 +44,7 @@ import '../types/other.dart';
 import 'engine.dart';
 
 import '../track/web/_audio_api.dart'
-    if (dart.library.html) '../track/web/_audio_html.dart' as audio;
+    if (dart.library.js_interop) '../track/web/_audio_html.dart' as audio;
 
 /// Room is the primary construct for LiveKit conferences. It contains a
 /// group of [Participant]s, each publishing and subscribing to [Track]s.

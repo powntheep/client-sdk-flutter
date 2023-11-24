@@ -176,12 +176,12 @@ class Transport extends Disposable {
     // actually negotiate
     logger.fine('starting to negotiate');
     final offer = await pc.createOffer(options?.toMap() ?? <String, dynamic>{});
-
     final sdpParsed = sdp_transform.parse(offer.sdp ?? '');
+
     sdpParsed['media']?.forEach((media) {
       if (media['type'] == 'video') {
-        ensureVideoDDExtensionForSVC(media, media['type'], media['port'],
-            media['protocol'], media['payloads']);
+        ensureVideoDDExtensionForSVC(media, media['type'],
+            int.parse(media['port']), media['protocol'], media['payloads']);
 
         // mung sdp for codec bitrate setting that can't apply by sendEncoding
         for (var trackbr in _bitrateTrackers) {

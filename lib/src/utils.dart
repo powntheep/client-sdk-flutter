@@ -67,9 +67,10 @@ class Utils {
     RetryCondition? retryCondition,
   }) async {
     List<Object> errors = [];
-    while (tries-- > 0) {
+    int triesLeft = tries--;
+    while (triesLeft > 0) {
       try {
-        return await future(tries, errors);
+        return await future(triesLeft, errors);
       } catch (error) {
         logger.fine('[Retry] Caught error ${error}...');
         errors.add(error);

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 import 'dart:convert';
-import 'dart:html' as html;
+import 'package:web/helpers.dart' as html;
 import 'dart:js_util' as js_util;
 import 'dart:typed_data';
 import 'package:js/js.dart';

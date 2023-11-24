@@ -13,7 +13,9 @@
 // limitations under the License.
 
 import 'dart:async';
-import 'dart:html' as html;
+import 'dart:js_interop';
+import 'package:web/helpers.dart' as html;
+import 'package:web/web.dart';
 import 'dart:typed_data';
 
 import '../../extensions.dart';
@@ -31,27 +33,27 @@ Future<LiveKitWebSocketWeb> lkWebSocketConnect(
 class LiveKitWebSocketWeb extends LiveKitWebSocket {
   final html.WebSocket _ws;
   final WebSocketEventHandlers? options;
-  late final StreamSubscription _messageSubscription;
-  late final StreamSubscription _closeSubscription;
 
   LiveKitWebSocketWeb._(
     this._ws, [
     this.options,
   ]) {
     _ws.binaryType = 'arraybuffer';
-    _messageSubscription = _ws.onMessage.listen((_) {
+    _ws.onmessage = (html.MessageEvent event) {
       if (isDisposed) {
         logger.warning('$objectId already disposed, ignoring received data.');
         return;
       }
-      dynamic data = _.data is ByteBuffer ? _.data.asUint8List() : _.data;
+      print(
+          'received data: ${event.data}, ${event.data.runtimeType}, JSArrayBuffer: ${event.data is JSArrayBuffer}');
+      dynamic data = event.data is JSArrayBuffer
+          ? (event.data as JSArrayBuffer).toDart.asUint8List()
+          : event.data;
       options?.onData?.call(data);
-    });
-    _closeSubscription = _ws.onClose.listen((_) async {
-      await _messageSubscription.cancel();
-      await _closeSubscription.cancel();
+    }.toJS;
+    _ws.onclose = (html.CloseEvent _) async {
       options?.onDispose?.call();
-    });
+    }.toJS;
 
     onDispose(() async {
       if (_ws.readyState != html.WebSocket.CLOSED) {
@@ -61,7 +63,7 @@ class LiveKitWebSocketWeb extends LiveKitWebSocket {
   }
 
   @override
-  void send(List<int> data) => _ws.send(data);
+  void send(List<int> data) => _ws.send(data.jsify()!);
 
   static Future<LiveKitWebSocketWeb> connect(
     Uri uri, [
@@ -69,10 +71,11 @@ class LiveKitWebSocketWeb extends LiveKitWebSocket {
   ]) async {
     final completer = Completer<LiveKitWebSocketWeb>();
     final ws = html.WebSocket(uri.toString());
-    ws.onOpen
-        .listen((_) => completer.complete(LiveKitWebSocketWeb._(ws, options)));
-    ws.onError
-        .listen((_) => completer.completeError(WebSocketException.connect()));
-    return completer.future;
+    ws.onopen = ((html.Event _) =>
+        completer.complete(LiveKitWebSocketWeb._(ws, options))).toJS;
+    ws.onerror = ((html.Event _) =>
+        completer.completeError(WebSocketException.connect())).toJS;
+    final response = await completer.future;
+    return response;
   }
 }

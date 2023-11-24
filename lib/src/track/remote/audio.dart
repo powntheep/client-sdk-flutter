@@ -24,7 +24,7 @@ import '../local/local.dart';
 import '../stats.dart';
 import 'remote.dart';
 
-import '../web/_audio_api.dart' if (dart.library.html) '../web/_audio_html.dart'
+import '../web/_audio_api.dart' if (dart.library.js_interop) '../web/_audio_html.dart'
     as audio;
 
 class RemoteAudioTrack extends RemoteTrack

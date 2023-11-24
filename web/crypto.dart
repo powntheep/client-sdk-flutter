@@ -15,7 +15,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'dart:js_util' as jsutil;
-import 'dart:html' as html;
+import 'package:web/helpers.dart' as html;
 
 import 'package:js/js.dart';
 

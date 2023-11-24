@@ -4,13 +4,23 @@ import 'package:logging/logging.dart';
 import 'package:intl/intl.dart';
 import 'pages/connect.dart';
 
+dynamic toIntIfInt(dynamic v) {
+  return v != null
+      ? int.tryParse(v) != null
+          ? int.parse(v)
+          : v
+      : null;
+}
+
 void main() async {
-  final format = DateFormat('HH:mm:ss');
-  // configure logs for debugging
-  Logger.root.level = Level.FINE;
-  Logger.root.onRecord.listen((record) {
-    print('${format.format(record.time)}: ${record.message}');
-  });
+  // final format = DateFormat('HH:mm:ss');
+  // // configure logs for debugging
+  // Logger.root.level = Level.FINE;
+  // Logger.root.onRecord.listen((record) {
+  //   print('${format.format(record.time)}: ${record.message}');
+  // });
+
+  toIntIfInt('- ');
 
   WidgetsFlutterBinding.ensureInitialized();
 
